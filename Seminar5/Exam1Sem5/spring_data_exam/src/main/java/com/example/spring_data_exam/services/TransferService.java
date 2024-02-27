@@ -1,6 +1,5 @@
 package com.example.spring_data_exam.services;
-
-
+import com.example.spring_data_exam.aspects.TrackUserAction;
 import com.example.spring_data_exam.exeption.AccountNotFoundException;
 import com.example.spring_data_exam.model.Account;
 import com.example.spring_data_exam.repository.AccountRepository;
@@ -18,7 +17,6 @@ public class TransferService {
   private final AccountRepository accountRepository;
 
 
-
   @Transactional
   public void transferMoney(long idSender, long idReceiver, BigDecimal amount) {
     Account sender = accountRepository.findById(idSender)
@@ -33,12 +31,16 @@ public class TransferService {
     accountRepository.changeAmount(idSender, senderNewAmount);
     accountRepository.changeAmount(idReceiver, receiverNewAmount);
   }
-
+  @TrackUserAction
   public Iterable<Account> getAllAccounts() {
     return accountRepository.findAll();
   }
 
+  @TrackUserAction
   public List<Account> findAccountsByName(String name) {
     return accountRepository.findAccountsByName(name);
   }
+
+
+
 }
