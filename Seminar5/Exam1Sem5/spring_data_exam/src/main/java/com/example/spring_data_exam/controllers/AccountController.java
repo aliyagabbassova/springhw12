@@ -3,8 +3,12 @@ package com.example.spring_data_exam.controllers;
 
 import com.example.spring_data_exam.dto.TransferRequest;
 import com.example.spring_data_exam.model.Account;
+import com.example.spring_data_exam.services.FileGateWay;
 import com.example.spring_data_exam.services.TransferService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
@@ -12,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
   private final TransferService transferService;
-
+  private final FileGateWay fileGateWay;
 
   @PostMapping("/transfer")
   public void transferMoney(
       @RequestBody TransferRequest request
       ) {
-    transferService.transferMoney(
+        transferService.transferMoney(
         request.getSenderAccountId(),
         request.getReceiverAccountId(),
         request.getAmount());
@@ -33,6 +37,12 @@ public class AccountController {
     } else {
       return transferService.findAccountsByName(name);
     }
+  }
+
+  @PostMapping("/accounts")
+  public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+      fileGateWay.writeToFile(account.getName() + "txt", account.toString());
+ return new ResponseEntity<> (HttpStatus.CREATED);
   }
 
 }
